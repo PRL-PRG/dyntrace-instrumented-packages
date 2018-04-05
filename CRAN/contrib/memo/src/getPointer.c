@@ -100,7 +100,7 @@ SEXP stringify_item(SEXP item, char *bufptr) {
     switch (TYPEOF(item)) {
     case PROMSXP:
       /* if we have a promise, drill down. */
-      item = PRCODE(item);
+      item = get_PRCODE(item);
       break;
     case CHARSXP:
       /* interned string, represent its pointer */
