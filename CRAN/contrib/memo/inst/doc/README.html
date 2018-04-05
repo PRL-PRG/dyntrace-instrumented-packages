@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Peter Meilstrup" />
+
+<meta name="date" content="2018-01-03" />
+
+<title>The ‘memo’ package</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceLine, a.sourceLine { display: inline-block; min-height: 1.25em; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; }
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+div.sourceLine, a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource div.sourceLine, .numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource div.sourceLine::before, .numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em; }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; color: #aaaaaa;  padding-left: 4px; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; color: initial; }
+}
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.bn { color: #40a070; } /* BaseN */
+code span.fl { color: #40a070; } /* Float */
+code span.ch { color: #4070a0; } /* Char */
+code span.st { color: #4070a0; } /* String */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.ot { color: #007020; } /* Other */
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.fu { color: #06287e; } /* Function */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code span.cn { color: #880000; } /* Constant */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.im { } /* Import */
+code span.va { color: #19177c; } /* Variable */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.op { color: #666666; } /* Operator */
+code span.bu { } /* BuiltIn */
+code span.ex { } /* Extension */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.at { color: #7d9029; } /* Attribute */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">The ‘memo’ package</h1>
+<h4 class="author"><em>Peter Meilstrup</em></h4>
+<h4 class="date"><em>2018-01-03</em></h4>
+
+
+
+<section id="memo" class="level1">
+<h1>#memo</h1>
+<p>The <code>memo</code> package implements a simple in-memory cache for the results of repeated computations.</p>
+<section id="fibonnacci-example" class="level2">
+<h2>Fibonnacci example</h2>
+<p>Consider this terrible way to compute the Fibonnacci sequence:</p>
+<pre class="sourceCode r" id="cb1"><code class="sourceCode r"><div class="sourceLine" id="cb1-1" data-line-number="1">fib &lt;-<span class="st"> </span><span class="cf">function</span>(n) <span class="cf">if</span> (n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) <span class="dv">1</span> <span class="cf">else</span> <span class="kw">fib</span>(n<span class="dv">-1</span>) <span class="op">+</span><span class="st"> </span><span class="kw">fib</span>(n<span class="dv">-2</span>)</div></code></pre>
+<p>This function is very slow to compute larger values. Each call to <code>fib(n)</code> with <code>n &gt; 1</code> generates two more calls to <code>fib</code>, leading to a runtime complexity of <code>O(2^n)</code>. Let’s count how many recursive calls to <code>fib</code> are involved in computing each <code>fib(n)</code>:</p>
+<pre class="sourceCode r" id="cb2"><code class="sourceCode r"><div class="sourceLine" id="cb2-1" data-line-number="1">count.calls &lt;-<span class="st"> </span><span class="cf">function</span>(f) {</div>
+<div class="sourceLine" id="cb2-2" data-line-number="2">  <span class="kw">force</span>(f)</div>
+<div class="sourceLine" id="cb2-3" data-line-number="3">  <span class="cf">function</span>(...) {</div>
+<div class="sourceLine" id="cb2-4" data-line-number="4">    count &lt;&lt;-<span class="st"> </span>count<span class="op">+</span><span class="dv">1</span>;</div>
+<div class="sourceLine" id="cb2-5" data-line-number="5">    <span class="kw">f</span>(...)</div>
+<div class="sourceLine" id="cb2-6" data-line-number="6">  }</div>
+<div class="sourceLine" id="cb2-7" data-line-number="7">}</div>
+<div class="sourceLine" id="cb2-8" data-line-number="8"></div>
+<div class="sourceLine" id="cb2-9" data-line-number="9">with_count &lt;-<span class="st"> </span><span class="cf">function</span>(f) {</div>
+<div class="sourceLine" id="cb2-10" data-line-number="10">  <span class="kw">force</span>(f)</div>
+<div class="sourceLine" id="cb2-11" data-line-number="11">  <span class="cf">function</span>(x) {</div>
+<div class="sourceLine" id="cb2-12" data-line-number="12">    count &lt;&lt;-<span class="st"> </span><span class="dv">0</span></div>
+<div class="sourceLine" id="cb2-13" data-line-number="13">    <span class="kw">c</span>(<span class="dt">n=</span>x, <span class="dt">result=</span><span class="kw">f</span>(x), <span class="dt">calls=</span>count)</div>
+<div class="sourceLine" id="cb2-14" data-line-number="14">  }</div>
+<div class="sourceLine" id="cb2-15" data-line-number="15">}</div>
+<div class="sourceLine" id="cb2-16" data-line-number="16"></div>
+<div class="sourceLine" id="cb2-17" data-line-number="17">fib &lt;-<span class="st"> </span><span class="kw">count.calls</span>(fib)</div>
+<div class="sourceLine" id="cb2-18" data-line-number="18"></div>
+<div class="sourceLine" id="cb2-19" data-line-number="19"><span class="kw">t</span>(<span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">16</span>, <span class="kw">with_count</span>(fib)))</div></code></pre>
+<pre><code>##        n result calls
+##  [1,]  1      1     1
+##  [2,]  2      2     3
+##  [3,]  3      3     5
+##  [4,]  4      5     9
+##  [5,]  5      8    15
+##  [6,]  6     13    25
+##  [7,]  7     21    41
+##  [8,]  8     34    67
+##  [9,]  9     55   109
+## [10,] 10     89   177
+## [11,] 11    144   287
+## [12,] 12    233   465
+## [13,] 13    377   753
+## [14,] 14    610  1219
+## [15,] 15    987  1973
+## [16,] 16   1597  3193</code></pre>
+<p>The number of calls increases unreasonably. This is because, say, <code>fib(6)</code> calls both <code>fib(5)</code> and <code>fib(4)</code>, but <code>fib(5)</code> also calls <code>fib(4)</code>, so the second computation is wasted work, and this gets worse the higher <code>n</code> you have. We would be in better shape if later invocations of <code>fib</code> could access the values that were previously computed.</p>
+<p>By wrapping <code>fib</code> using <code>memo</code>, fewer calls are made:</p>
+<pre class="sourceCode r" id="cb4"><code class="sourceCode r"><div class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">library</span>(memo)</div>
+<div class="sourceLine" id="cb4-2" data-line-number="2">fib &lt;-<span class="st"> </span><span class="kw">memo</span>(fib)</div>
+<div class="sourceLine" id="cb4-3" data-line-number="3"><span class="kw">t</span>(<span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span><span class="dv">16</span>, <span class="kw">with_count</span>(fib)))</div></code></pre>
+<pre><code>##        n result calls
+##  [1,]  1      1     1
+##  [2,]  2      2     3
+##  [3,]  3      3     2
+##  [4,]  4      5     2
+##  [5,]  5      8     2
+##  [6,]  6     13     2
+##  [7,]  7     21     2
+##  [8,]  8     34     2
+##  [9,]  9     55     2
+## [10,] 10     89     2
+## [11,] 11    144     2
+## [12,] 12    233     2
+## [13,] 13    377     2
+## [14,] 14    610     2
+## [15,] 15    987     2
+## [16,] 16   1597     2</code></pre>
+<p>Here is only called to compute new values. Note that <code>fib(16)</code> only took two calls to compute, because <code>fib(15)</code> was previously computed. To compute <code>fib(16)</code> <em>de novo</em> takes 17 calls:</p>
+<pre class="sourceCode r" id="cb6"><code class="sourceCode r"><div class="sourceLine" id="cb6-1" data-line-number="1">fib &lt;-<span class="st"> </span><span class="cf">function</span>(n) <span class="cf">if</span> (n <span class="op">&lt;=</span><span class="st"> </span><span class="dv">1</span>) <span class="dv">1</span> <span class="cf">else</span> <span class="kw">fib</span>(n<span class="dv">-1</span>) <span class="op">+</span><span class="st"> </span><span class="kw">fib</span>(n<span class="dv">-2</span>)</div>
+<div class="sourceLine" id="cb6-2" data-line-number="2">fib &lt;-<span class="st"> </span><span class="kw">memo</span>(<span class="kw">count.calls</span>(fib))</div>
+<div class="sourceLine" id="cb6-3" data-line-number="3"><span class="kw">with_count</span>(fib)(<span class="dv">16</span>)</div></code></pre>
+<pre><code>##      n result  calls 
+##     16   1597     17</code></pre>
+</section>
+</section>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
