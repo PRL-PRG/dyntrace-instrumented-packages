@@ -95,9 +95,9 @@ List inspect_rec(SEXP x, Environment base_env, std::set<SEXP>& seen) {
 
     case PROMSXP:
       children = List::create(
-        _["value"] = inspect_rec(PRVALUE(x), base_env, seen),
-        _["code"] = inspect_rec(PRCODE(x), base_env, seen),
-        _["env"]  = inspect_rec(PRENV(x), base_env, seen)
+        _["value"] = inspect_rec(get_PRVALUE(x), base_env, seen),
+        _["code"] = inspect_rec(get_PRCODE(x), base_env, seen),
+        _["env"]  = inspect_rec(get_PRENV(x), base_env, seen)
       );
       break;
 

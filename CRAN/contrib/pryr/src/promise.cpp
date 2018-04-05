@@ -11,22 +11,22 @@ bool is_promise2(Symbol name, Environment env) {
 // [[Rcpp::export]]
 SEXP promise_code(Symbol name, Environment env) {
   SEXP object = Rf_findVar(name, env);
-  return PRCODE(object);
+  return get_PRCODE(object);
 }
 // [[Rcpp::export]]
 SEXP promise_value(Symbol name, Environment env) {
   SEXP object = Rf_findVar(name, env);
-  return PRVALUE(object);
+  return get_PRVALUE(object);
 }
 // [[Rcpp::export]]
 bool promise_evaled(Symbol name, Environment env) {
   SEXP object = Rf_findVar(name, env);
-  return PRVALUE(object) != R_UnboundValue;
+  return get_PRVALUE(object) != R_UnboundValue;
 }
 // [[Rcpp::export]]
 SEXP promise_env(Symbol name, Environment env) {
   SEXP object = Rf_findVar(name, env);
-  return PRENV(object);
+  return get_PRENV(object);
 }
 
 
@@ -38,16 +38,16 @@ RObject makeExplicit(SEXP prom) {
 
   // recurse until we find the real promise, not a promise of a promise
   while(true) {
-    SEXP code = PRCODE(prom);
+    SEXP code = get_PRCODE(prom);
     if(TYPEOF(code) != PROMSXP) break;
     prom = code;
   }
 
-  SEXP args = PROTECT(Rf_lcons(PRCODE(prom), R_NilValue));
+  SEXP args = PROTECT(Rf_lcons(get_PRCODE(prom), R_NilValue));
   RObject formula = Rf_lcons(Rf_install("~"), args);
   UNPROTECT(1);
 
-  formula.attr(".Environment") = PRENV(prom);
+  formula.attr(".Environment") = get_PRENV(prom);
   formula.attr("class") = "formula";
 
   return formula;
