@@ -106,7 +106,7 @@ static int arg_is_symbol (SEXP prom, SEXP *sym)
 {
     SEXP code;
 
-    code = not_byte_code (TYPEOF(prom) == PROMSXP ? PRCODE(prom) : prom);
+    code = not_byte_code (TYPEOF(prom) == PROMSXP ? get_PRCODE(prom) : prom);
 
     if (TYPEOF(code) != SYMSXP)
         return 0;
@@ -208,9 +208,9 @@ SEXP quoted_arg (SEXP env, SEXP cenv)
 
             expr = expr_nbc = prom;
             PROTECT (prom = allocSExp (PROMSXP));
-            SET_PRCODE (prom, expr);
-            SET_PRVALUE (prom, expr);
-            SET_PRENV (prom, R_EmptyEnv);
+            set_PRCODE (prom, expr);
+            set_PRVALUE (prom, expr);
+            set_PRENV (prom, R_EmptyEnv);
             defineVar (sym, prom, cenv);
             SET_NAMED (prom, 1);
             MARK_NOT_MUTABLE (expr);
@@ -222,20 +222,20 @@ SEXP quoted_arg (SEXP env, SEXP cenv)
                a version that won't have been byte compiled. */
 
             PROTECT(prom);
-            expr = PRCODE(prom);
+            expr = get_PRCODE(prom);
             expr_nbc = not_byte_code(expr);
         }
 
-        SEXP old_prom = look_upwards (expr_nbc, PRENV(prom));
+        SEXP old_prom = look_upwards (expr_nbc, get_PRENV(prom));
 
         if (old_prom != R_NilValue) {
 
             /* If the argument is a previously-quoted/notquoted argument,
                copy from the old promise. */
 
-            SET_PRENV (prom, PRENV(old_prom));
-            SET_PRCODE (prom, PRCODE(old_prom));
-            SET_PRVALUE (prom, PRVALUE(old_prom));
+            set_PRENV (prom, get_PRENV(old_prom));
+            set_PRCODE (prom, get_PRCODE(old_prom));
+            set_PRVALUE (prom, get_PRVALUE(old_prom));
 
             SETLEVELS (prom, LEVELS(prom) | (LEVELS(old_prom) 
                               & (QUOTED_MASK | NOTQUOTED_MASK)));
@@ -259,8 +259,8 @@ SEXP quoted_arg (SEXP env, SEXP cenv)
             /* If the argument is being quoted, set the value in its promise
                to the expression, making it look like it's been forced. */
 
-            SET_PRVALUE (prom, expr_nbc);
-            MARK_NOT_MUTABLE(PRVALUE(prom));
+            set_PRVALUE (prom, expr_nbc);
+            MARK_NOT_MUTABLE(get_PRVALUE(prom));
 
             SETLEVELS (prom, LEVELS(prom) | QUOTED_MASK);
         }
@@ -307,7 +307,7 @@ SEXP quoted_environment (SEXP env, SEXP cenv)
 
     /* Return the environment for a quoted argument, or R NULL otherwise. */
 
-    return LEVELS(prom) & QUOTED_MASK ? PRENV(prom) : R_NilValue;
+    return LEVELS(prom) & QUOTED_MASK ? get_PRENV(prom) : R_NilValue;
 }
 
 
@@ -346,14 +346,14 @@ SEXP quoted_eval (SEXP env, SEXP cenv)
 
         /* Return the value stored in the promise of a nonquoted argument. */
 
-        return PRVALUE(prom);
+        return get_PRVALUE(prom);
     }
     else {
 
         /* Return the result of evaluating the quoted expression in its
            environment. */
 
-        return eval (PRCODE(prom), PRENV(prom));
+        return eval (get_PRCODE(prom), get_PRENV(prom));
     }
 }
 
@@ -405,10 +405,10 @@ SEXP quoted_assign (SEXP env, SEXP cenv, SEXP name,
     if (arg_is_symbol (value, &sym)) {
         vprom = look_upwards (sym, cenv);
         if (vprom != R_NilValue) {
-            value = PRVALUE(vprom);
-            code = PRCODE(vprom);
+            value = get_PRVALUE(vprom);
+            code = get_PRCODE(vprom);
             if (missing_evalenv) 
-                evalenv = PRENV(vprom);
+                evalenv = get_PRENV(vprom);
         }
     }
 
@@ -424,22 +424,22 @@ SEXP quoted_assign (SEXP env, SEXP cenv, SEXP name,
     PROTECT (code);
     PROTECT (value);
     PROTECT (prom = allocSExp (PROMSXP));
-    SET_PRENV (prom, evalenv);
-    SET_PRVALUE (prom, value);
+    set_PRENV (prom, evalenv);
+    set_PRVALUE (prom, value);
 
     if (evalenv == R_NilValue) {
-        SET_PRCODE (prom, code);
+        set_PRCODE (prom, code);
         SETLEVELS (prom, NOTQUOTED_MASK);
     }
     else {
-        SET_PRCODE (prom, value);
+        set_PRCODE (prom, value);
         SETLEVELS (prom, QUOTED_MASK);
     }
 
     defineVar (name, prom, assignenv);
     SET_NAMED (prom, 1);
-    MARK_NOT_MUTABLE (PRCODE(prom));
-    MARK_NOT_MUTABLE (PRVALUE(prom));
+    MARK_NOT_MUTABLE (get_PRCODE(prom));
+    MARK_NOT_MUTABLE (get_PRVALUE(prom));
 
     UNPROTECT(3);  /* code, value, prom */
 
