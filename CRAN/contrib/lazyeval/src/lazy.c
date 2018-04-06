@@ -5,12 +5,12 @@
 SEXP promise_as_lazy(SEXP promise, SEXP env, int follow_symbols) {
   // recurse until we find the real promise, not a promise of a promise
   while(TYPEOF(promise) == PROMSXP) {
-    if (PRENV(promise) == R_NilValue) {
+    if (get_PRENV(promise) == R_NilValue) {
       Rf_error("Promise has already been forced");
     }
 
-    env = PRENV(promise);
-    promise = PREXPR(promise);
+    env = get_PRENV(promise);
+    promise = get_PREXPR(promise);
 
     // If the promise is threaded through multiple functions, we'll
     // get some symbols along the way. If the symbol is bound to a promise

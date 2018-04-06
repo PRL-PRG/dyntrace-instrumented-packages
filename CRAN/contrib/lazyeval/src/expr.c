@@ -6,8 +6,8 @@
 SEXP base_promise(SEXP promise, SEXP env) {
   // recurse until we find the real promise, not a promise of a promise
   while(TYPEOF(promise) == PROMSXP) {
-    env = PRENV(promise);
-    promise = PREXPR(promise);
+    env = get_PRENV(promise);
+    promise = get_PREXPR(promise);
 
     // promise has already been forced so can't go further
     if (env == R_NilValue)
@@ -39,8 +39,8 @@ SEXP base_promise_env(SEXP promise, SEXP env) {
 
   // recurse until we find the real promise, not a promise of a promise
   while(TYPEOF(promise) == PROMSXP) {
-    env = PRENV(promise);
-    promise = PREXPR(promise);
+    env = get_PRENV(promise);
+    promise = get_PREXPR(promise);
 
     // promise has already been forced so can't go further
     if (env == R_NilValue)

@@ -22,7 +22,7 @@ bool is_lazy_load(SEXP x) {
   if (TYPEOF(x) != PROMSXP)
     return false;
 
-  return is_call_to(PREXPR(x), "lazyLoadDBfetch");
+  return is_call_to(get_PREXPR(x), "lazyLoadDBfetch");
 }
 
 SEXP findLast(SEXP x) {
