@@ -12,8 +12,8 @@ namespace Rcpp{
             if( TYPEOF(x) != PROMSXP )
                 stop("not a promise") ;
             
-            while(TYPEOF(PRCODE(x)) == PROMSXP){
-                x = PRCODE(x) ;
+            while(TYPEOF(get_PRCODE(x)) == PROMSXP){
+                x = get_PRCODE(x) ;
             }
             data = x ;    
         }
@@ -29,7 +29,7 @@ namespace Rcpp{
          * Return the result of the PRVALUE macro on the promise
          */
         SEXP value() const{
-            SEXP val = PRVALUE(data) ; 
+            SEXP val = get_PRVALUE(data) ; 
             if( val == R_UnboundValue ) {
                 stop("unevaluated promise");     
             }
@@ -37,21 +37,21 @@ namespace Rcpp{
         }
 
         bool was_evaluated() const{
-            return PRVALUE(data) != R_UnboundValue ;    
+            return get_PRVALUE(data) != R_UnboundValue ;    
         }
         
         /**
          * The promise expression: PRCODE
          */
         SEXP expression() const {
-            return PRCODE(data);    
+            return get_PRCODE(data);    
         }
 
         /**
          * The promise environment : PRENV
          */
         SEXP environment() const {
-            return PRENV(data);     
+            return get_PRENV(data);     
         }
         
     } ;
