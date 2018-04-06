@@ -6,8 +6,8 @@ SEXP promise_as_lazy(SEXP promise, SEXP env, int follow_symbols) {
   // never go past the global environment
   while(TYPEOF(promise) == PROMSXP && env != R_GlobalEnv) {
 
-    env = PRENV(promise);
-    promise = PREXPR(promise);
+    env = get_PRENV(promise);
+    promise = get_PREXPR(promise);
 
     // If the promise is threaded through multiple functions, we'll
     // get some symbols along the way. If the symbol is bound to a promise
@@ -158,7 +158,7 @@ SEXP promise_expr_(SEXP prom) {
     error("prom must be a promise");
   }
 
-  return PREXPR(prom);
+  return get_PREXPR(prom);
 }
 
 SEXP promise_env_(SEXP prom) {
@@ -166,6 +166,6 @@ SEXP promise_env_(SEXP prom) {
     error("prom must be a promise");
   }
 
-  return PRENV(prom);
+  return get_PRENV(prom);
 }
 
