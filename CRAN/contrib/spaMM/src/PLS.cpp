@@ -163,11 +163,11 @@ bool is_promise2(Symbol name, Environment env) {
 // [[Rcpp::export]]
 SEXP promise_code(Symbol name, Environment env) {
   SEXP object = Rf_findVar(name, env);
-  return PRCODE(object);
+  return get_PRCODE(object);
 }
 // [[Rcpp::export]]
 SEXP promise_value(Symbol name, Environment env) {
   SEXP object = Rf_findVar(name, env);
-  return PRVALUE(object);
+  return get_PRVALUE(object);
 }
 */
