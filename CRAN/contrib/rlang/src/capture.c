@@ -31,8 +31,8 @@ SEXP attribute_hidden new_captured_promise(SEXP x, SEXP env) {
 
     SEXP expr = x;
     while (TYPEOF(expr) == PROMSXP) {
-        expr_env = PRENV(expr);
-        expr = PREXPR(expr);
+        expr_env = get_PRENV(expr);
+        expr = get_PREXPR(expr);
     }
 
     // Evaluated arguments are returned as literals
@@ -55,7 +55,7 @@ SEXP attribute_hidden rlang_capturearginfo(SEXP call, SEXP op, SEXP args, SEXP r
 
     // May be a literal if compiler did not wrap in a promise
     if (TYPEOF(sym) == PROMSXP)
-        sym = PREXPR(sym);
+        sym = get_PREXPR(sym);
     else
         return new_captured_literal(sym);
 
