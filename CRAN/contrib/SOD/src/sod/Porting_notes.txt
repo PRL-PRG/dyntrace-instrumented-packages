@@ -1,0 +1,79 @@
+Notes regarding porting the algorithm to R using Rcpp.
+
+sod External includes
+
+in header files
+../dataStructs.h
+../customWidgets/fSpinBox.h
+../open_cl/oCL_base.h
+../imageBuilder/f_parameter.h
+
+in code files
+../open_cl/oCL_base.h
+../open_cl/clError.h
+../customWidgets/clineEdit.h  (from SodController.cpp)
+
+
+Of these we probably only need the open_cl, the dataStructs, and the f_parameter.h
+
+SodController functions should be replaced by R / Rcpp functions to glue the stuff
+together.
+
+Note that we can get rid of all drawing classes as well. (Well we may want to make something
+that will assemble a load of numbers in a way that can quickly be drawn by R. Not sure exactly
+what we would want to use though).
+
+Most things we ought to be able to do with simple R points commands. (Stuff like pie charts is
+probably not really possible. Extending normal plot functions is probably a bit unlikely).
+
+(Note that to draw force vectors for all points is pretty much impossible for any significant number (a 1000
+points will have a million connectors and that is a bit too much).
+
+
+Functions that we need to replace from SodController
+
+shrink_dims(f_parameter& par)
+
+We also need something that emulates
+
+read_positions(f_parameter& par)
+
+but rather than reading from a file we take the data from a pre-existing
+structure (like the output from prcomp) and then lets the c part calculate
+distances from the positions. Don't try to calculate distances in R. That is
+too slow.
+
+
+The simplest start to this may be to initially just port the openCL dependent
+functions. These have the advantage of not requiring any Qt classes as we
+don't do any tracking of the movement of the positions (though they do require
+the openCL includes and directories). Note that I've used Qt classes to
+implement the multi-threading for the standard behaviour. This is convenient
+as it does make it cross-platform, but not so good as it requires non-standard
+libraries.
+
+At the moment, the oCL_DistanceMapper does not return the resulting positions,
+but merely the stress information. This needs to be amended.
+
+### To port the oCL functions, we need the following files  ###
+
+oCL_DistanceMapper.cpp / .h --> oCL_base.h, clError.h (../open_cl/)
+oCL_DistanceMapperManager.cpp / .h --> node_set.h
+
+move_deltoids*.cl
+
+but we should modify so that we are not relying on node_set, as all we
+need is a couple of float arrays. The open_cl/ directory also contains a load
+of other stuff, but we don't need that so remove that. All we need is oCL_base
+and clError.h
+
+
+In order to expose the required functionality to R we will make a bridge to
+oCL_DistanceMapperManager using RCPP_MODULE. We can then expose selected
+functions in oCL_DistanceMapperManager for both input and output.
+
+
+
+
+
+

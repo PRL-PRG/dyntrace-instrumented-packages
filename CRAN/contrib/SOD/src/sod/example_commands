@@ -1,0 +1,11 @@
+read_distances file=all_dist dist=d1
+read_positions file=all_pos pos=d1
+### after mapping positions 
+read_annotation file=counts_table.raw dist=d1
+set_plot_par viewer=d1 forces=false
+set_plot_par viewer=d1 type=pie
+set_plot_par viewer=d1 diameter=40
+set_plot_par viewer=d1 field=image
+set_plot_par viewer=d1 filter_field=image filter_values=2,3
+
+postscript viewer=d1 fname=plot.eps w=5 h=5

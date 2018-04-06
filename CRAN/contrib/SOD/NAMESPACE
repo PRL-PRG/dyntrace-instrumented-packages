@@ -1,0 +1,8 @@
+useDynLib(SOD)
+##exportPattern("^[[:alpha:]]+")
+exportPattern("^DimSqueezer.*", "^plot[A-Z]", "DimFactors$", "^plot\\.sod_sq3")
+export(hsvScale)
+export(kStress)
+export(nStress)
+import( Rcpp )
+import( methods )
